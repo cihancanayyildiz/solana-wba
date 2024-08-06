@@ -2,7 +2,7 @@ import { createUmi } from "@metaplex-foundation/umi-bundle-defaults"
 import { createSignerFromKeypair, signerIdentity, generateSigner, percentAmount } from "@metaplex-foundation/umi"
 import { createNft, mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
 
-import wallet from "../wba-wallet.json"
+import wallet from "./wallet/wba-wallet.json"
 import base58 from "bs58";
 
 const RPC_ENDPOINT = "https://api.devnet.solana.com";
@@ -16,11 +16,22 @@ umi.use(mplTokenMetadata())
 const mint = generateSigner(umi);
 
 (async () => {
-    // let tx = ???
-    // let result = await tx.sendAndConfirm(umi);
-    // const signature = base58.encode(result.signature);
+    let tx = createNft(umi, 
+        {
+            mint,
+            name: "The Cihan Rug",
+            symbol: "TCR",
+            uri: "https://arweave.net/oLN6JE46zc_oC3qE-NF_i0npP7fG31aqZdk0-X1omrg",
+            sellerFeeBasisPoints: percentAmount(5),
+        }
+    ); 
+    let result = await tx.sendAndConfirm(umi);
+    const signature = base58.encode(result.signature);
     
-    // console.log(`Succesfully Minted! Check out your TX here:\nhttps://explorer.solana.com/tx/${signature}?cluster=devnet`)
+    console.log(`Succesfully Minted! Check out your TX here:\nhttps://explorer.solana.com/tx/${signature}?cluster=devnet`)
 
     console.log("Mint Address: ", mint.publicKey);
+
+    // https://explorer.solana.com/tx/2sqJXz4NnDmRLvGrswPe2kmKFogpF3zU9D5q98o6PhZqnUHYEPxnDJdzDhUqR5oWiFYJscM2uciDkxNNUiuFmjAV?cluster=devnet
+    // GEzcoG1JWmeR1XWGxqtLNRBtjAhqEeRN5FXd45buoyhU
 })();
